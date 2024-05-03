@@ -5,6 +5,7 @@ import moviesAPI.moviesAPI.Service.ConsumeAPI;
 import moviesAPI.moviesAPI.Service.ConvertData;
 import moviesAPI.moviesAPI.repository.SerieRepository;
 
+import java.awt.desktop.PreferencesEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -34,7 +35,10 @@ public class Principal {
                     1 - Search Series
                     2 - Search Episodes
                     3 - List Searched series
-                    
+                    4 - Search Serie By Name
+                    5 - Search Serie By Actor
+                    6 - Top 5 Series
+                    7 - Search Serie by Category
                     0 - Quit Menu
                     """;
 
@@ -53,12 +57,66 @@ public class Principal {
                 case 3:
                     showSearchedSeries();
                     break;
+                case 4: 
+                    searchSerieByName();
+                    break;
+                case 5:
+                    searchSerieByActor();
+                    break;
+                case 6:
+                    searchTopFiveSeries();
+                    break;
+                case 7:
+                    searchSeriesByCategory();
+                    break;
                 case 0:
                     System.out.println("Exiting menu");
                     break;
                 default:
                     System.out.println("Invalid Optiton");
             }
+        }
+    }
+
+    private void searchSeriesByCategory() {
+        System.out.println("Which serie's genre you want to search?");
+        var nameGenre = reader.nextLine();
+        Category category = Category.fromString(nameGenre);
+        List<Serie> seriesByCategory = repository.findByGenre(category);
+
+        System.out.println("Categry choose series: " + nameGenre);
+        seriesByCategory.forEach(System.out::println);
+
+    }
+
+    private void searchTopFiveSeries() {
+
+        List<Serie> seriesTop = repository.findTop5ByOrderByScore();
+        System.out.println("The top five series are");
+        seriesTop.forEach(s ->
+                System.out.println(s.getTitle() + " score: " + s.getScore()));
+    }
+
+    private void searchSerieByActor() {
+        System.out.println("Choose a serie by actor name: ");
+        var actorName = reader.nextLine();
+
+        List<Serie> foundSeries = repository.findByActorsContainingIgnoreCase(actorName);
+        System.out.println("Series that the actor " + actorName + " worked: ");
+        foundSeries.forEach(s ->
+                System.out.println(s.getTitle()));
+    }
+
+    private void searchSerieByName() {
+        System.out.println("Choose a serie by name: ");
+        var serieName = reader.nextLine();
+
+        Optional<Serie> searchedSerie = repository.findByTitleContainingIgnoreCase(serieName);
+
+        if(searchedSerie.isPresent()){
+            System.out.println("Serie Data: " + searchedSerie.get());
+        }else{
+            System.out.println("Serie Not Found");
         }
     }
 
