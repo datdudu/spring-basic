@@ -1,14 +1,23 @@
 package moviesAPI.moviesAPI.Model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-
+@Table
+@Entity(name = "episodes")
 public class Episode {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
     private Integer season;
     private String title;
     private Integer numberOfEpisode;
     public Double score;
     private LocalDate releaseDate;
+
+    @ManyToOne
+    private Serie serie;
 
     public Episode(Integer seasonNumber, EpisodeData episodeData){
         this.season = seasonNumber;
@@ -27,6 +36,35 @@ public class Episode {
         }
 
     }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
+    }
+
+    public Integer getNumberOfEpisode() {
+        return numberOfEpisode;
+    }
+
+    public void setNumberOfEpisode(Integer numberOfEpisode) {
+        this.numberOfEpisode = numberOfEpisode;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
+    }
+
+    public Episode() {
+
+    }
+
     public Integer getSeason() {
         return season;
     }
